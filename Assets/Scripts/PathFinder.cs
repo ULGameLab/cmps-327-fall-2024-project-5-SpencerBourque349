@@ -58,10 +58,35 @@ public class PathFinder
             // You just need to fill code inside this foreach only
             foreach (Tile nextTile in current.tile.Adjacents)
             {
-                
+                if (DoneList.Exists(n => n.tile == nextTile))
+                continue;
+
+                int tentativeGCost = (int)current.costSoFar + (int)GetDistance(current.tile, nextTile);
+
+                Node existingNode = TODOList.Find(n => n.tile == nextTile);
+                if (existingNode != null && tentativeGCost >= existingNode.costSoFar)
+                continue;
+
+                int hCost = (int)HeuristicsDistance(nextTile, goal);
+                int fCost = tentativeGCost + hCost;
+
+                if (existingNode == null)
+                {
+                    TODOList.Add(new Node(nextTile, fCost, current, tentativeGCost));
+                }
+                else {
+                    existingNode.costSoFar = tentativeGCost;
+                    existingNode.priority = fCost;
+                    existingNode.cameFrom = current;
+                }
             }
         }
         return new Queue<Tile>(); // Returns an empty Path if no path is found
+    }
+    private int GetDistance(Tile a, Tile b)
+    {
+    // Assuming each adjacent tile movement costs 10
+    return 10; 
     }
 
     // TODO: Find the path based on A-Star Algorithm
